@@ -1,7 +1,6 @@
-import {html, PolymerElement} from '@polymer/polymer/polymer-element.js';
-import { updateStyles } from '@polymer/polymer/lib/mixins/element-mixin.js';
-import 'blox-connect';
-
+import { html, PolymerElement } from "./node_modules/@polymer/polymer/polymer-element.js";
+import { updateStyles } from "./node_modules/@polymer/polymer/lib/mixins/element-mixin.js";
+import "./node_modules/blox-connect/blox-connect.js";
 /**
  * `blox-settings`
  * description
@@ -10,6 +9,7 @@ import 'blox-connect';
  * @polymer
  * @demo demo/index.html
  */
+
 class BloxSettings extends PolymerElement {
   static get template() {
     return html`
@@ -137,29 +137,30 @@ class BloxSettings extends PolymerElement {
       </template>
     `;
   }
+
   static get properties() {
     return {
       net: {
-        type: String,
+        type: String
       },
       screen: {
         type: String,
         observer: '_screen'
       },
       url: {
-        type: String,
+        type: String
       },
       ui: {
         type: Boolean,
-        value: false,
+        value: false
       },
       eos: {
-        type: Object,
-      },
+        type: Object
+      }
     };
   }
 
-  _screen(){
+  _screen() {
     if (this.screen === 'join') {
       this.join = true;
     } else {
@@ -167,29 +168,40 @@ class BloxSettings extends PolymerElement {
     }
   }
 
+  _joinUsername() {
+    this.joinUsernameLength = this.joinUsername.length;
+  }
 
-  //------------------------------------ JOIN
-  _joinUsername(){
-    this.joinUsernameLength = this.joinUsername.length
+  _joinPassword() {
+    this.joinPasswordLength = this.joinPassword.length;
   }
-  _joinPassword(){
-    this.joinPasswordLength = this.joinPassword.length
-  }
-  _joinCheckbox(){
-    if(this.joinCheckbox === undefined && this.joinCheckboxValue === undefined){
-      this.joinCheckboxValue = true
+
+  _joinCheckbox() {
+    if (this.joinCheckbox === undefined && this.joinCheckboxValue === undefined) {
+      this.joinCheckboxValue = true;
     } else {
       this.joinCheckboxValue = !this.joinCheckboxValue;
     }
-    if(this.joinCheckboxValue){
-      this.updateStyles({'--btnOpacity': 1});
-      this.updateStyles({'--btnCursor': 'pointer'});
-      
+
+    if (this.joinCheckboxValue) {
+      console.log('on');
+      this.updateStyles({
+        '--btnOpacity': 1
+      });
+      this.updateStyles({
+        '--btnCursor': 'pointer'
+      });
     } else {
-      this.updateStyles({'--btnOpacity': 0.3});
-      this.updateStyles({'--btnCursor': 'not-allowed)'});
+      console.log('off');
+      this.updateStyles({
+        '--btnOpacity': 0.3
+      });
+      this.updateStyles({
+        '--btnCursor': 'not-allowed)'
+      });
     }
   }
 
+}
 
-} window.customElements.define('blox-settings', BloxSettings);
+window.customElements.define('blox-settings', BloxSettings);
