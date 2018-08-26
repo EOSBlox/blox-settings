@@ -83,7 +83,7 @@ class BloxSettings extends PolymerElement {
     }
     input[type="checkbox"] {
         -webkit-appearance: none;
-        width: 18px;
+        width: 20px;
         height: 18px;
         background: url(../images/checkbox.svg) no-repeat;
         background-size: contain;
@@ -93,6 +93,7 @@ class BloxSettings extends PolymerElement {
         outline:0;
         border: 0;
         padding:0;
+        min-width:20px;
     }
     input[type="checkbox"]:checked {
         background-image: url(../images/checkbox-selected.svg);
@@ -216,14 +217,6 @@ class BloxSettings extends PolymerElement {
       </template>
 
       <template is="dom-if" if="{{deleteAccount}}">
-        <label for="deleteAccount_password">Password</label>
-        <input type="password" name="deleteAccount_password" id="deleteAccount_password" value="{{deleteAccountPassword::input}}" on-keyup="_deleteAccountPassword">
-        <div class="counter-container">
-          <small class="comment">8 or more charectors </small>
-          <template is="dom-if" if="{{deleteAccountPasswordLength}}">
-            <small class="comment"> ({{deleteAccountPasswordLength}})</small>
-          </template>
-        </div>
         <div class="checkbox-container">
           <input type="checkbox" name="password" id="accept_deleteAccount" value="{{deleteAccountCheckbox::input}}" on-mousedown="_deleteAccountCheckbox"> 
           <label for="accept_deleteAccount" class="checkbox-label">I accept that by deleting this account I will loose access to all profiles within.
@@ -445,9 +438,7 @@ class BloxSettings extends PolymerElement {
 
   //------------------------------------ DeleteAccount
 
-  _deleteAccountPassword(){
-    this.deleteAccountPasswordLength = this.deleteAccountPassword.length
-  }
+
   _deleteAccountCheckbox(){
     if(this.deleteAccountCheckbox === undefined && this.deleteAccountCheckboxValue === undefined){
       this.deleteAccountCheckboxValue = true
