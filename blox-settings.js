@@ -125,7 +125,7 @@ class BloxSettings extends PolymerElement {
       width: 60px;
       height: 60px;
       border-radius: 50%;
-      margin: 10px;
+      margin: 10px 10px 10px 30px;
       background: url(../images/avatar.svg) no-repeat;
       background-size: contain;
       vertical-align: middle;
@@ -198,6 +198,18 @@ class BloxSettings extends PolymerElement {
           </template>
         </div>
         <button type="button">Login</button>
+      </template>
+
+      <template is="dom-if" if="{{logout}}">
+        <label for="join_password">Password</label>
+        <input type="password" name="logout_password" id="logout_password" value="{{logoutPassword::input}}" on-keyup="_logoutPassword">
+        <div class="counter-container">
+          <small class="comment">8 or more charectors </small>
+          <template is="dom-if" if="{{logoutPasswordLength}}">
+            <small class="comment"> ({{logoutPasswordLength}})</small>
+          </template>
+        </div>
+        <button type="button">Logout</button>
       </template>
 
       <template is="dom-if" if="{{deleteProfile}}">
@@ -428,6 +440,19 @@ class BloxSettings extends PolymerElement {
   _loginPassword(){
     this.loginPasswordLength = this.loginPassword.length
     if(this.loginPasswordLength >= 8){
+      this.updateStyles({'--btnOpacity': 1});
+      this.updateStyles({'--btnCursor': 'pointer'});
+    } else {
+      this.updateStyles({'--btnOpacity': 0.3});
+      this.updateStyles({'--btnCursor': 'not-allowed)'});
+    }
+  }
+
+  //------------------------------------ LOG OUT
+
+  _logoutPassword(){
+    this.logoutPasswordLength = this.logoutPassword.length
+    if(this.logoutPasswordLength >= 8){
       this.updateStyles({'--btnOpacity': 1});
       this.updateStyles({'--btnCursor': 'pointer'});
     } else {
