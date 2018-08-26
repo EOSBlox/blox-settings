@@ -411,6 +411,7 @@ class BloxSettings extends PolymerElement {
     if (this.screen === 'active') {this.active = true} else {this.active = false}
     if (this.screen === 'select') {this.select = true} else {this.select = false}
     if (this.screen === 'edit') {this.edit = true} else {this.edit = false}
+    if (this.screen === 'logout') {this.logout = true} else {this.logout = false}
   }
 
 
