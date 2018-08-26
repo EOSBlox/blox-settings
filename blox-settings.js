@@ -109,10 +109,56 @@ class BloxSettings extends PolymerElement {
     .checkbox-container{
       display:flex;
     }
+    .avatar-container{
+      display:flex;
+      border-bottom: 1px solid #CACCCF;
+    }
+    .avatar-container-single{
+      display:flex;
+    }
     .counter-container{
       display: flex;
       justify-content: space-between;
     }
+    .avatar{
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      margin: 10px;
+      background: url(../images/avatar.svg) no-repeat;
+      background-size: contain;
+      vertical-align: middle;
+    }
+    .avatar-large{
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      margin: 10px;
+      background: url(../images/avatar.svg) no-repeat;
+      background-size: contain;
+      vertical-align: middle;
+      margin: 0 auto;
+    }
+    a{
+      text-decoration: none;
+    }
+    h1 {
+      margin: 10;
+      font-size: 23px;
+      color: #393d4d;
+      margin-left: 8px;
+    }
+    .small{
+      font-size: 13px;
+      font-weight: 400;
+      color: #9da1ab;
+      position: relative;
+      top: -7px;
+    }
+    .edit-container{
+      text-align: center;
+    }
+
       </style>
 
       <blox-connect eos="{{eos}}"></blox-connect>
@@ -153,22 +199,6 @@ class BloxSettings extends PolymerElement {
         <button type="button">Login</button>
       </template>
 
-      <template is="dom-if" if="{{deleteAccount}}">
-        <label for="deleteAccount_password">Password</label>
-        <input type="password" name="deleteAccount_password" id="deleteAccount_password" value="{{deleteAccountPassword::input}}" on-keyup="_deleteAccountPassword">
-        <div class="counter-container">
-          <small class="comment">8 or more charectors </small>
-          <template is="dom-if" if="{{deleteAccountPasswordLength}}">
-            <small class="comment"> ({{deleteAccountPasswordLength}})</small>
-          </template>
-        </div>
-        <div class="checkbox-container">
-          <input type="checkbox" name="password" id="accept_deleteAccount" value="{{deleteAccountCheckbox::input}}" on-mousedown="_deleteAccountCheckbox"> 
-          <label for="accept_deleteAccount" class="checkbox-label">I accept that by deleting this account I will loose access to all profiles within.
-        </div>
-        <button type="button">Join</button>
-      </template>
-
       <template is="dom-if" if="{{deleteProfile}}">
         <label for="deleteProfile_password">Password</label>
         <input type="password" name="deleteProfile_password" id="deleteProfile_password" value="{{deleteProfilePassword::input}}" on-keyup="_deleteProfilePassword">
@@ -182,7 +212,23 @@ class BloxSettings extends PolymerElement {
           <input type="checkbox" name="password" id="accept_deleteProfile" value="{{deleteProfileCheckbox::input}}" on-mousedown="_deleteProfileCheckbox"> 
           <label for="accept_deleteProfile" class="checkbox-label">I accept that by deleting this profile I will loose access to it.
         </div>
-        <button type="button">Join</button>
+        <button type="button">Delete Profile</button>
+      </template>
+
+      <template is="dom-if" if="{{deleteAccount}}">
+        <label for="deleteAccount_password">Password</label>
+        <input type="password" name="deleteAccount_password" id="deleteAccount_password" value="{{deleteAccountPassword::input}}" on-keyup="_deleteAccountPassword">
+        <div class="counter-container">
+          <small class="comment">8 or more charectors </small>
+          <template is="dom-if" if="{{deleteAccountPasswordLength}}">
+            <small class="comment"> ({{deleteAccountPasswordLength}})</small>
+          </template>
+        </div>
+        <div class="checkbox-container">
+          <input type="checkbox" name="password" id="accept_deleteAccount" value="{{deleteAccountCheckbox::input}}" on-mousedown="_deleteAccountCheckbox"> 
+          <label for="accept_deleteAccount" class="checkbox-label">I accept that by deleting this account I will loose access to all profiles within.
+        </div>
+        <button type="button">Delete Account</button>
       </template>
 
       <template is="dom-if" if="{{add}}">
@@ -262,7 +308,7 @@ class BloxSettings extends PolymerElement {
 
       <template is="dom-if" if="{{password}}">
         <label for="old_password">Old Password</label>
-        <input type="text" name="old_password" id="old_password" value="{{oldPassword::input}}" on-keyup="_oldPassword">
+        <input type="password" name="old_password" id="old_password" value="{{oldPassword::input}}" on-keyup="_oldPassword">
         <div class="counter-container">
         <small class="comment">8 or more charectors </small>
         <template is="dom-if" if="{{oldPasswordLength}}">
@@ -290,6 +336,38 @@ class BloxSettings extends PolymerElement {
           <label for="dont_forget_password" class="checkbox-label">I understand that if I forget or lose this password there is no other way of accessing this account.</label>
         </div>
         <button type="button">Change Password</button>
+      </template>
+
+      <template is="dom-if" if="{{active}}">
+        <div class="avatar-container-single">
+          <div class="avatar"></div>
+          <h1>WillHill1234 </br><small class="small">@willhill1234</small></h1>
+        </div>
+      </template>
+
+      <template is="dom-if" if="{{select}}">
+        <a href="#">
+          <div class="avatar-container">
+            <div class="avatar"></div>
+            <h1>WillHill1234 </br><small class="small">@willhill1234</small></h1>
+          </div>
+        </a>
+        <a href="#">
+          <div class="avatar-container">
+            <div class="avatar"></div>
+            <h1>JamesFishes </br><small class="small">@jamesfishes</small></h1>
+          </div>
+        </a>
+      </template>
+
+      <template is="dom-if" if="{{edit}}">
+        <div class="edit-container">
+          <div class="avatar-large"></div>
+          <p>Change Photo</p>
+        </div>
+        <label for="join_username">Username</label>
+        <input type="text" name="join_username" id="join_username" value="{{joinUsername::input}}" on-keyup="_joinUsername">
+        <button type="button">Save Profile</button>
       </template>
 
     `;
@@ -325,6 +403,9 @@ class BloxSettings extends PolymerElement {
     if (this.screen === 'backup') {this.backup = true} else {this.backup = false}
     if (this.screen === 'import') {this.import = true} else {this.import = false}
     if (this.screen === 'password') {this.password = true} else {this.password = false}
+    if (this.screen === 'active') {this.active = true} else {this.active = false}
+    if (this.screen === 'select') {this.select = true} else {this.select = false}
+    if (this.screen === 'edit') {this.edit = true} else {this.edit = false}
   }
 
 
@@ -373,6 +454,13 @@ class BloxSettings extends PolymerElement {
     } else {
       this.deleteAccountCheckboxValue = !this.deleteAccountCheckboxValue;
     }
+    if(this.deleteAccountCheckboxValue){
+      this.updateStyles({'--btnOpacity': 1});
+      this.updateStyles({'--btnCursor': 'pointer'});
+    } else {
+      this.updateStyles({'--btnOpacity': 0.3});
+      this.updateStyles({'--btnCursor': 'not-allowed)'});
+    }
 
   }
 
@@ -387,7 +475,13 @@ class BloxSettings extends PolymerElement {
       } else {
         this.deleteProfileCheckboxValue = !this.deleteProfileCheckboxValue;
       }
-  
+      if(this.deleteProfileCheckboxValue){
+        this.updateStyles({'--btnOpacity': 1});
+        this.updateStyles({'--btnCursor': 'pointer'});
+      } else {
+        this.updateStyles({'--btnOpacity': 0.3});
+        this.updateStyles({'--btnCursor': 'not-allowed)'});
+      }
     }
   
   //------------------------------------ Add
