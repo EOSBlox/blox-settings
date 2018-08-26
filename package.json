@@ -1,6 +1,10 @@
 {
   "name": "blox-settings",
-  "description": "description",
+  "version": "1.0.0",
+  "author": "EOS Blox",
+  "homepage": "https://eosblox.com/",
+  "description": "Typical settings screens for an EOS dApp",
+  "license": "MIT",
   "main": "blox-settings.js",
   "dependencies": {
     "@polymer/polymer": "^3.0.0",
