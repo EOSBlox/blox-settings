@@ -1,6 +1,8 @@
 import {html, PolymerElement} from '@polymer/polymer/polymer-element.js';
 import { updateStyles } from '@polymer/polymer/lib/mixins/element-mixin.js';
 import 'blox-connect';
+import 'blox-keypair';
+import 'blox-account';
 
 /**
  * `blox-settings`
@@ -162,7 +164,9 @@ class BloxSettings extends PolymerElement {
 
       </style>
 
-      <blox-connect eos="{{eos}}"></blox-connect>
+      <blox-connect id="connect" eos="{{eos}}"></blox-connect>
+      <blox-keypair id="keypair"></blox-keypair>
+      <blox-account id="account"></blox-account>
 
       <template is="dom-if" if="{{join}}">
         <label for="join_username">Username</label>
@@ -185,7 +189,7 @@ class BloxSettings extends PolymerElement {
           <input type="checkbox" name="password" id="dont_forget_password" value="{{joinCheckbox::input}}" on-mousedown="_joinCheckbox"> 
           <label for="dont_forget_password" class="checkbox-label">I understand that if I forget or lose this password there is no other way of accessing this account.</label>
         </div>
-        <button type="button">Join</button>
+        <button type="button" on-click="_join">Join</button>
       </template>
 
       <template is="dom-if" if="{{login}}">
@@ -396,6 +400,10 @@ class BloxSettings extends PolymerElement {
       eos: {
         type: Object,
       },
+      loading: {
+        type: Boolean,
+        value: false,
+      }
     };
   }
 
@@ -436,6 +444,31 @@ class BloxSettings extends PolymerElement {
       this.updateStyles({'--btnCursor': 'not-allowed)'});
     }
   }
+  _join(){
+    this.loading = true;
+    if(this.eos){
+      this.$.account.exists(this.eos, this.joinUsername)
+      .then((exists) => {
+        if(exists === true) {
+          throw 'username';
+        } else {
+          return this.$.keypair.generate()
+        }
+      })
+      .then((keypair) => {
+        // encrypt the private keys
+        // save the keypairs and the username to local storage
+        console.log(keypair);
+      })
+      .catch((err) => {
+        this.error = err;
+      })
+    } else {
+      this.error = 'Connection'
+    }
+
+  }
+
   //------------------------------------ LOGIN
 
   _loginPassword(){
