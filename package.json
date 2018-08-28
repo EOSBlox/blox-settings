@@ -10,7 +10,8 @@
     "@polymer/polymer": "^3.0.0",
     "blox-account": "^1.0.4",
     "blox-connect": "^1.0.7",
-    "blox-keypair": "^1.0.2"
+    "blox-keypair": "^1.0.2",
+    "blox-secure": "^1.0.0"
   },
   "devDependencies": {
     "@polymer/iron-demo-helpers": "^3.0.0-pre.19",

@@ -3,6 +3,7 @@ import { updateStyles } from '@polymer/polymer/lib/mixins/element-mixin.js';
 import 'blox-connect';
 import 'blox-keypair';
 import 'blox-account';
+import 'blox-secure';
 
 /**
  * `blox-settings`
@@ -167,6 +168,7 @@ class BloxSettings extends PolymerElement {
       <blox-connect id="connect" eos="{{eos}}"></blox-connect>
       <blox-keypair id="keypair"></blox-keypair>
       <blox-account id="account"></blox-account>
+      <blox-secure id="secure"></blox-secure>
 
       <template is="dom-if" if="{{join}}">
         <label for="join_username">Username</label>
@@ -456,6 +458,20 @@ class BloxSettings extends PolymerElement {
         }
       })
       .then((keypair) => {
+        console.log(keypair)
+        let password = this.joinPassword;
+        let activePublicKey = keypair[0].publicKey
+        let activePrivateKey = keypair[0].privateKey
+        let ownerPublicKey = keypair[1].publicKey
+        let ownerPrivateKey = keypair[1].privateKey
+        this.$.secure.encrypt(password, activePrivateKey)
+        .then((hash) => {
+          console.log(hash)
+        })
+        this.$.secure.encrypt(password, ownerPrivateKey)
+        .then((hash) => {
+          console.log(hash)
+        })
         // encrypt the private keys
         // save the keypairs and the username to local storage
         console.log(keypair);
