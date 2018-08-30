@@ -4,6 +4,7 @@ import 'blox-connect';
 import 'blox-keypair';
 import 'blox-account';
 import 'blox-secure';
+import 'blox-store';
 
 /**
  * `blox-settings`
@@ -169,6 +170,7 @@ class BloxSettings extends PolymerElement {
       <blox-keypair id="keypair"></blox-keypair>
       <blox-account id="account"></blox-account>
       <blox-secure id="secure"></blox-secure>
+      <blox-store id="store"></blox-store>
 
       <template is="dom-if" if="{{join}}">
         <label for="join_username">Username</label>
@@ -447,8 +449,9 @@ class BloxSettings extends PolymerElement {
     }
   }
   _join(){
-    this.loading = true;
     if(this.eos){
+      let account = [];
+      this.loading = true;
       this.$.account.exists(this.eos, this.joinUsername)
       .then((exists) => {
         if(exists === true) {
@@ -458,23 +461,22 @@ class BloxSettings extends PolymerElement {
         }
       })
       .then((keypair) => {
-        console.log(keypair)
         let password = this.joinPassword;
-        let activePublicKey = keypair[0].publicKey
-        let activePrivateKey = keypair[0].privateKey
-        let ownerPublicKey = keypair[1].publicKey
-        let ownerPrivateKey = keypair[1].privateKey
-        this.$.secure.encrypt(password, activePrivateKey)
-        .then((hash) => {
-          console.log(hash)
-        })
-        this.$.secure.encrypt(password, ownerPrivateKey)
-        .then((hash) => {
-          console.log(hash)
-        })
-        // encrypt the private keys
-        // save the keypairs and the username to local storage
-        console.log(keypair);
+        account.push({
+          username: this.joinUsername,
+          activePublicKey: keypair[0].publicKey,
+          ownerPublicKey: keypair[1].publicKey,
+        }); 
+        return Promise.all([
+          this.$.secure.encrypt(password, keypair[0].privateKey), 
+          this.$.secure.encrypt(password, keypair[1].privateKey)
+        ]);
+      })
+      .then((encryptedArray) => {
+        account[0].activePrivateKey = encryptedArray[0];
+        account[0].ownerPrivateKey = encryptedArray[1];
+        account[0].active = true;
+        this.$.store.set('myApp', account)
       })
       .catch((err) => {
         this.error = err;
@@ -482,7 +484,6 @@ class BloxSettings extends PolymerElement {
     } else {
       this.error = 'Connection'
     }
-
   }
 
   //------------------------------------ LOGIN
