@@ -63,11 +63,7 @@ class BloxSettings extends PolymerElement {
         outline:0;
         opacity: var(--btnOpacity, 0.3);
         cursor: var(--btnCursor, not-allowed);
-    }
-    button:hover {
-        border: 1px solid #D3D5DA;
-        background: #F0F0F1;
-        cursor: var(--btnCursor, not-allowed);
+        overflow: hidden;
     }
     label {
         display: block;
@@ -163,7 +159,23 @@ class BloxSettings extends PolymerElement {
     .edit-container{
       text-align: center;
     }
-
+    .loadingBtn {
+      background-image: 
+        repeating-linear-gradient(
+          -45deg, 
+          transparent, 
+          transparent 1rem,
+          #F0F1F3 1rem,
+          #F0F1F3 2rem
+        );
+      background-size: 200% 200%;
+      animation: loadingbtn 8s linear infinite;
+    }
+    @keyframes loadingbtn {
+      100% {
+        background-position: 100% 100%;
+      }
+    }
       </style>
 
       <blox-connect id="connect" eos="{{eos}}"></blox-connect>
@@ -171,6 +183,8 @@ class BloxSettings extends PolymerElement {
       <blox-account id="account"></blox-account>
       <blox-secure id="secure"></blox-secure>
       <blox-store id="store"></blox-store>
+
+      <a href="[[url]]" id="navigate"></a>
 
       <template is="dom-if" if="{{join}}">
         <label for="join_username">Username</label>
@@ -193,7 +207,12 @@ class BloxSettings extends PolymerElement {
           <input type="checkbox" name="password" id="dont_forget_password" value="{{joinCheckbox::input}}" on-mousedown="_joinCheckbox"> 
           <label for="dont_forget_password" class="checkbox-label">I understand that if I forget or lose this password there is no other way of accessing this account.</label>
         </div>
-        <button type="button" on-click="_join">Join</button>
+        <template is="dom-if" if="{{loading}}">
+          <button type="button" on-click="_join" class="loadingBtn">Joining</button>
+        </template>
+        <template is="dom-if" if="{{!loading}}">
+          <button type="button" on-click="_join">Join</button>
+        </template>
       </template>
 
       <template is="dom-if" if="{{login}}">
@@ -205,7 +224,9 @@ class BloxSettings extends PolymerElement {
             <small class="comment"> ({{loginPasswordLength}})</small>
           </template>
         </div>
-        <button type="button">Login</button>
+        <button type="button">
+          Login
+        </button>
       </template>
 
       <template is="dom-if" if="{{logout}}">
@@ -476,15 +497,20 @@ class BloxSettings extends PolymerElement {
         account[0].activePrivateKey = encryptedArray[0];
         account[0].ownerPrivateKey = encryptedArray[1];
         account[0].active = true;
-        this.$.store.set('myApp', account)
+        this.$.store.set('myApp', account);
+        this.loading = false;
+        this.$.navigate.click();
       })
       .catch((err) => {
-        this.error = err;
+        this.loading = false;
+        alert('Username not available')
       })
     } else {
       this.error = 'Connection'
     }
   }
+
+  // TODO: Loading animation in button
 
   //------------------------------------ LOGIN
 
