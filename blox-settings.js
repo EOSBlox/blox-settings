@@ -208,7 +208,7 @@ class BloxSettings extends PolymerElement {
           <label for="dont_forget_password" class="checkbox-label">I understand that if I forget or lose this password there is no other way of accessing this account.</label>
         </div>
         <template is="dom-if" if="{{loading}}">
-          <button type="button" on-click="_join" class="loadingBtn">Joining</button>
+          <button type="button" class="loadingBtn">Joining</button>
         </template>
         <template is="dom-if" if="{{!loading}}">
           <button type="button" on-click="_join">Join</button>
@@ -224,9 +224,12 @@ class BloxSettings extends PolymerElement {
             <small class="comment"> ({{loginPasswordLength}})</small>
           </template>
         </div>
-        <button type="button">
-          Login
-        </button>
+        <template is="dom-if" if="{{loading}}">
+          <button type="button" class="loadingBtn">Loging In</button>
+        </template>
+        <template is="dom-if" if="{{!loading}}">
+          <button type="button" on-click="_login">Login</button>
+        </template>
       </template>
 
       <template is="dom-if" if="{{logout}}">
@@ -238,7 +241,12 @@ class BloxSettings extends PolymerElement {
             <small class="comment"> ({{logoutPasswordLength}})</small>
           </template>
         </div>
-        <button type="button">Logout</button>
+        <template is="dom-if" if="{{loading}}">
+          <button type="button" class="loadingBtn">Loging Out</button>
+        </template>
+        <template is="dom-if" if="{{!loading}}">
+          <button type="button" on-click="_logout">Logout</button>
+        </template>
       </template>
 
       <template is="dom-if" if="{{deleteProfile}}">
@@ -510,8 +518,6 @@ class BloxSettings extends PolymerElement {
     }
   }
 
-  // TODO: Loading animation in button
-
   //------------------------------------ LOGIN
 
   _loginPassword(){
@@ -523,6 +529,11 @@ class BloxSettings extends PolymerElement {
       this.updateStyles({'--btnOpacity': 0.3});
       this.updateStyles({'--btnCursor': 'not-allowed)'});
     }
+  }
+  _login(){
+    this.loading = true;
+    console.log(this.loginPassword);
+    this.loading = false;
   }
 
   //------------------------------------ LOG OUT
@@ -536,6 +547,32 @@ class BloxSettings extends PolymerElement {
       this.updateStyles({'--btnOpacity': 0.3});
       this.updateStyles({'--btnCursor': 'not-allowed)'});
     }
+  }
+
+  _logout(){
+    let account;
+    this.loading = true;
+    this.$.store.get('myApp')
+    .then((fetchedAccount) => {
+      if(!fetchedAccount.username){
+        this.$.navigate.click();
+      } else {
+        account = fetchedAccount
+        return this.$.secure.decrypt(this.logoutPassword, JSON.parse(account[0].activePrivateKey))
+      }
+    })
+    .then(() => {
+      return this.$.secure.encrypt(this.logoutPassword, account)
+    })
+    .then((encryptedAccount) => {
+      this.$.store.set('myApp', encryptedAccount);
+      this.loading = false;
+      this.$.navigate.click();
+    })
+    .catch((err) => {
+      this.loading = false;
+      alert(err)
+    })
   }
 
   //------------------------------------ DeleteAccount
